@@ -8,34 +8,34 @@ using System.Threading.Tasks;
 
 namespace GestaoReceitas
 {
-    public class Recipe
+    public class Receita
     {
-        public string Name { get; set; }
-        public List<Ingredient> Ingredients { get; set; }
-        public TimeSpan PreparationTime { get; set; }
-        public string Instructions { get; set; }
+        public string Nome { get; set; }
+        public List<Ingrediente> Ingredientes { get; set; }
+        public TimeSpan TempoPreparacao { get; set; }
+        public string Instrucoes { get; set; }
 
-        public Recipe(string name, List<Ingredient> ingredients, TimeSpan preparationTime, string instructions)
+        public Receita(string name, List<Ingrediente> ingredients, TimeSpan preparationTime, string instructions)
         {
-            Name = name;
-            Ingredients = ingredients;
-            PreparationTime = preparationTime;
-            Instructions = instructions;
+            Nome = name;
+            Ingredientes = ingredients;
+            TempoPreparacao = preparationTime;
+            Instrucoes = instructions;
         }
 
     }
 
-    public class Ingredient
+    public class Ingrediente
     {
-        public string Name { get; set; }
-        public decimal Quantity { get; set; }
-        public string Unit { get; set; }
+        public string Nome { get; set; }
+        public decimal Quantidade { get; set; }
+        public string Unidade { get; set; }
 
-        public Ingredient(string name, decimal quantity, string unit)
+        public Ingrediente(string name, decimal quantity, string unit)
         {
-            Name = name;
-            Quantity = quantity;
-            Unit = unit;
+            Nome = name;
+            Quantidade = quantity;
+            Unidade = unit;
         }
     }
 }
