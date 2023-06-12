@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,14 +8,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using ListView = System.Windows.Forms.ListView;
 
 namespace GestaoReceitas
 {
     public partial class VerReceitas : Form
     {
+        private ListViewColumnSorter lvwColumnSorter;
         public VerReceitas()
         {
             InitializeComponent();
+            lstViewReceitas.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            lstViewReceitas.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvwColumnSorter = new ListViewColumnSorter();
+            lstViewReceitas.ListViewItemSorter = lvwColumnSorter;
+            ListViewItem item1 = new ListViewItem("Something");
+            item1.SubItems.Add("SubItem1a");
+            item1.SubItems.Add("SubItem1b");
+            item1.SubItems.Add("SubItem1c");
+
+            ListViewItem item2 = new ListViewItem("Something2");
+            item2.SubItems.Add("SubItem2a");
+            item2.SubItems.Add("SubItem2b");
+            item2.SubItems.Add("SubItem2c");
+
+            ListViewItem item3 = new ListViewItem("Something3");
+            item3.SubItems.Add("SubItem3a");
+            item3.SubItems.Add("SubItem3b");
+            item3.SubItems.Add("SubItem3c");
+            lstViewReceitas.Items.AddRange(new ListViewItem[] { item1, item2, item3 });
         }
 
         private bool checkFile(string filePath)
@@ -43,8 +66,49 @@ namespace GestaoReceitas
         private void VerReceitas_Load(object sender, EventArgs e)
         {
             string filePathReceitas = "receitas.csv";
-            string filePathIngredientes = "ingredientes.csv";
             if (!checkFile(filePathReceitas)) { return; }
         }
+
+        private void lstViewReceitas_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            // Determine if clicked column is already the column that is being sorted.
+            if (e.Column == lvwColumnSorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (lvwColumnSorter.Order == SortOrder.Ascending)
+                {
+                    lvwColumnSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    lvwColumnSorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                lvwColumnSorter.SortColumn = e.Column;
+                lvwColumnSorter.Order = SortOrder.Ascending;
+            }
+
+            // Perform the sort with these new sort options.
+            lstViewReceitas.Sort();
+        }
+
+        private void lstViewReceitas_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (lstViewReceitas.SelectedItems.Count == 1) {
+                
+                ListViewItem.ListViewSubItemCollection items = ((ListViewI)sender).SubItems;
+                foreach (ListViewItem item in items)
+                {
+                    MessageBox.Show(item.ToString());
+
+                }
+            } 
+            
+            //item.SubItems[];
+        }
     }
+
 }

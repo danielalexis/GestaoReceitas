@@ -146,7 +146,8 @@ namespace GestaoReceitas
                         string line = sr.ReadLine();
                         string[] values = line.Split(',');
 
-                        if (values.Length >= 1 && values[0] == username) {
+                        if (values.Length >= 1 && values[0] == username)
+                        {
                             return true;
                         }
                     }

@@ -57,6 +57,7 @@
             btnVerReceitas.Text = "Ver Receitas";
             btnVerReceitas.TextImageRelation = TextImageRelation.ImageAboveText;
             btnVerReceitas.UseVisualStyleBackColor = true;
+            btnVerReceitas.Click += btnVerReceitas_Click;
             // 
             // lblWelcome
             // 

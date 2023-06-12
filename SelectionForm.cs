@@ -29,6 +29,11 @@ namespace GestaoReceitas
 
         }
 
-
+        private void btnVerReceitas_Click(object sender, EventArgs e)
+        {
+            VerReceitas verReceitas = new VerReceitas();
+            verReceitas.Show();
+            this.Close();
+        }
     }
 }

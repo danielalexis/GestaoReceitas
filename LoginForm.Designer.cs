@@ -40,20 +40,20 @@
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(386, 330);
+            txtPassword.Location = new Point(386, 276);
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '*';
             txtPassword.Size = new Size(223, 23);
-            txtPassword.TabIndex = 0;
+            txtPassword.TabIndex = 1;
             txtPassword.UseSystemPasswordChar = true;
             // 
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Segoe UI", 48F, FontStyle.Regular, GraphicsUnit.Point);
-            lblTitulo.Location = new Point(108, 9);
+            lblTitulo.Font = new Font("Segoe UI", 48F, FontStyle.Italic, GraphicsUnit.Point);
+            lblTitulo.Location = new Point(79, 9);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(856, 86);
+            lblTitulo.Size = new Size(834, 86);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Receitas de Auguste Gusteau";
             // 
@@ -71,7 +71,7 @@
             // 
             lblUsername.AutoSize = true;
             lblUsername.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            lblUsername.Location = new Point(428, 229);
+            lblUsername.Location = new Point(428, 175);
             lblUsername.Name = "lblUsername";
             lblUsername.Size = new Size(145, 21);
             lblUsername.TabIndex = 3;
@@ -81,7 +81,7 @@
             // 
             lblPassword.AutoSize = true;
             lblPassword.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            lblPassword.Location = new Point(459, 306);
+            lblPassword.Location = new Point(459, 252);
             lblPassword.Name = "lblPassword";
             lblPassword.Size = new Size(76, 21);
             lblPassword.TabIndex = 4;
@@ -89,27 +89,29 @@
             // 
             // txtUsername
             // 
-            txtUsername.Location = new Point(386, 265);
+            txtUsername.Location = new Point(386, 211);
             txtUsername.Name = "txtUsername";
             txtUsername.Size = new Size(223, 23);
-            txtUsername.TabIndex = 5;
+            txtUsername.TabIndex = 0;
             // 
             // btnLogin
             // 
-            btnLogin.Location = new Point(460, 371);
+            btnLogin.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btnLogin.Location = new Point(386, 315);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(75, 23);
-            btnLogin.TabIndex = 6;
+            btnLogin.Size = new Size(86, 46);
+            btnLogin.TabIndex = 2;
             btnLogin.Text = "Login";
             btnLogin.UseVisualStyleBackColor = true;
             btnLogin.Click += btnLogin_Click;
             // 
             // btnRegisto
             // 
-            btnRegisto.Location = new Point(460, 410);
+            btnRegisto.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btnRegisto.Location = new Point(523, 315);
             btnRegisto.Name = "btnRegisto";
-            btnRegisto.Size = new Size(75, 23);
-            btnRegisto.TabIndex = 7;
+            btnRegisto.Size = new Size(86, 46);
+            btnRegisto.TabIndex = 3;
             btnRegisto.Text = "Registo";
             btnRegisto.UseVisualStyleBackColor = true;
             btnRegisto.Click += btnRegisto_Click;
@@ -118,7 +120,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(984, 461);
+            ClientSize = new Size(984, 394);
             Controls.Add(btnRegisto);
             Controls.Add(btnLogin);
             Controls.Add(txtUsername);
