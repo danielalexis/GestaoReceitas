@@ -70,9 +70,9 @@ namespace GestaoReceitas
                         Utilizador utilizador = new Utilizador(txtUsername.Text, txtPassword.Text);
                         userFound = true;
                         sr.Close();
-                        SelectionForm selectionForm = new SelectionForm(utilizador);
-                        selectionForm.Show();
-                        Hide();
+                        Dashboard dashboard = new Dashboard(utilizador);
+                        dashboard.Show();
+                        //Hide();
                         break;
                     }
                 }

@@ -13,12 +13,15 @@ using ListView = System.Windows.Forms.ListView;
 
 namespace GestaoReceitas
 {
-    public partial class VerReceitas : Form
+    public partial class Dashboard : Form
     {
         private ListViewColumnSorter lvwColumnSorter;
-        public VerReceitas()
+        private Utilizador utilizador { get; set; }
+        public Dashboard(Utilizador utilizador)
         {
             InitializeComponent();
+            this.utilizador = utilizador;
+            // Definir a mensagem de Bem-Vindo
             lstViewReceitas.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             lstViewReceitas.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             lvwColumnSorter = new ListViewColumnSorter();
@@ -38,6 +41,10 @@ namespace GestaoReceitas
             item3.SubItems.Add("SubItem3b");
             item3.SubItems.Add("SubItem3c");
             lstViewReceitas.Items.AddRange(new ListViewItem[] { item1, item2, item3 });
+        }
+
+        private void Dashboard_Load(object sender, EventArgs e) {
+            lblBemVindo.Text += utilizador.Username;
         }
 
         private bool checkFile(string filePath)
@@ -63,11 +70,7 @@ namespace GestaoReceitas
             }
         }
 
-        private void VerReceitas_Load(object sender, EventArgs e)
-        {
-            string filePathReceitas = "receitas.csv";
-            if (!checkFile(filePathReceitas)) { return; }
-        }
+
 
         private void lstViewReceitas_ColumnClick(object sender, ColumnClickEventArgs e)
         {
@@ -97,7 +100,7 @@ namespace GestaoReceitas
 
         private void lstViewReceitas_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (lstViewReceitas.SelectedItems.Count == 1) {
+            /*if (lstViewReceitas.SelectedItems.Count == 1) {
                 
                 ListViewItem.ListViewSubItemCollection items = ((ListViewI)sender).SubItems;
                 foreach (ListViewItem item in items)
@@ -105,8 +108,8 @@ namespace GestaoReceitas
                     MessageBox.Show(item.ToString());
 
                 }
-            } 
-            
+            } */
+
             //item.SubItems[];
         }
     }

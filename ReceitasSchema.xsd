@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Receitas"
+    targetNamespace="http://tempuri.org/Receitas.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/Receitas.xsd"
+    xmlns:mstns="http://tempuri.org/Receitas.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+	<!-- Definição do tipo "unidade" -->
+	<xs:simpleType name="unidade">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Gramas"/>
+			<xs:enumeration value="Quilogramas"/>
+			<xs:enumeration value="Miligramas"/>
+			<xs:enumeration value="Litros"/>
+			<xs:enumeration value="Mililitros"/>
+			<xs:enumeration value="Colheres de Chá"/>
+			<xs:enumeration value="Colheres de Sopa"/>
+			<xs:enumeration value="Xícaras"/>
+			<xs:enumeration value="Unidades"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- Definição do elemento "receita" -->
+	<xs:element name="receita">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="nome" type="xs:string"/>
+				<xs:element name="categoria" type="xs:string"/>
+				<xs:element name="dificuldade" type="xs:string"/>
+				<xs:element name="descrição" type="xs:string"/>
+				<xs:element name="ingredientes">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ingrediente" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="nome" type="xs:string"/>
+										<xs:element name="quantidade" type="xs:decimal"/>
+										<xs:element name="unidade" type="unidade"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="preparação" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
