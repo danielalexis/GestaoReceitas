@@ -29,6 +29,7 @@
 				<xs:element name="nome" type="xs:string"/>
 				<xs:element name="categoria" type="xs:string"/>
 				<xs:element name="dificuldade" type="xs:string"/>
+				<xs:element name="tempo" type="xs:string"/>
 				<xs:element name="descrição" type="xs:string"/>
 				<xs:element name="ingredientes">
 					<xs:complexType>

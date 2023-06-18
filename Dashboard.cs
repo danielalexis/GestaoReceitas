@@ -26,7 +26,7 @@ namespace GestaoReceitas
             lstViewReceitas.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             lvwColumnSorter = new ListViewColumnSorter();
             lstViewReceitas.ListViewItemSorter = lvwColumnSorter;
-            ListViewItem item1 = new ListViewItem("Something");
+            /*ListViewItem item1 = new ListViewItem("Something");
             item1.SubItems.Add("SubItem1a");
             item1.SubItems.Add("SubItem1b");
             item1.SubItems.Add("SubItem1c");
@@ -40,11 +40,24 @@ namespace GestaoReceitas
             item3.SubItems.Add("SubItem3a");
             item3.SubItems.Add("SubItem3b");
             item3.SubItems.Add("SubItem3c");
-            lstViewReceitas.Items.AddRange(new ListViewItem[] { item1, item2, item3 });
+            lstViewReceitas.Items.AddRange(new ListViewItem[] { item1, item2, item3 });*/
         }
 
-        private void Dashboard_Load(object sender, EventArgs e) {
+        private void Dashboard_Load(object sender, EventArgs e)
+        {
             lblBemVindo.Text += utilizador.Username;
+            Receitas receitas = new Receitas();
+            List<Receitas.Receita> listaReceitas = receitas.ListaReceitas("receitas.xml", "ReceitasSchema.xsd");
+            foreach (Receitas.Receita receita in listaReceitas)
+            {
+                ListViewItem item = new ListViewItem(receita.Nome);
+                item.SubItems.Add(receita.Categoria);
+                item.SubItems.Add(receita.Dificuldade);
+                item.SubItems.Add(receita.Tempo);
+                item.SubItems.Add(receita.Descricao);
+                lstViewReceitas.Items.Add(item);
+            }
+
         }
 
         private bool checkFile(string filePath)
@@ -111,6 +124,11 @@ namespace GestaoReceitas
             } */
 
             //item.SubItems[];
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

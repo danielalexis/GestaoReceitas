@@ -45,6 +45,8 @@ public class Receitas
         public string Nome { get; set; }
         public string Categoria { get; set; }
         public string Dificuldade { get; set; }
+
+        public string Tempo { get; set; }
         public string Descricao { get; set; }
         public List<Ingrediente> Ingredientes { get; set; }
         public string Preparacao { get; set; }
@@ -53,12 +55,9 @@ public class Receitas
     private void CriarXML(string xmlPath) {
         if (!File.Exists(xmlPath)) {
             using (XmlWriter writer = XmlWriter.Create(xmlPath)) {
-                // Definir as configurações do escritor XML
-                writer.Settings.Indent = true;
-
                 // Escrever o elemento raiz e definir o namespace, se necessário
                 writer.WriteStartElement("receitas");
-                writer.WriteAttributeString("xmlns", "", null, "http://www.example.com/receitas");
+                writer.WriteAttributeString("xmlns", "http://tempuri.org/Receitas.xsd");
 
                 // Finalizar a escrita e fechar o escritor XML
                 writer.WriteEndElement();
@@ -69,9 +68,8 @@ public class Receitas
 
     public List<Receita> ListaReceitas(string xmlPath, string xsdPath)
     {
+        CriarXML(xmlPath);
         List<Receita> receitas = new List<Receita>();
-
-        
 
         // Carregar o esquema XSD
         XmlSchemaSet schemaSet = new XmlSchemaSet();
@@ -99,6 +97,9 @@ public class Receitas
                 receita.Categoria = reader.ReadElementContentAsString();
 
                 reader.ReadToNextSibling("dificuldade");
+                receita.Dificuldade = reader.ReadElementContentAsString();
+
+                reader.ReadToNextSibling("tempo");
                 receita.Dificuldade = reader.ReadElementContentAsString();
 
                 reader.ReadToNextSibling("descrição");
@@ -153,4 +154,78 @@ public class Receitas
             _ => throw new ArgumentException($"Unidade de ingrediente inválida: {unidade}"),
         };
     }
+
+
+    public void AdicionarReceita(string xmlPath, Receita novaReceita)
+    {
+        // Carregar as receitas existentes do arquivo XML
+        List<Receita> receitas = ListaReceitas(xmlPath, "ReceitasSchema.xsd");
+
+        // Adicionar a nova receita à lista
+        receitas.Add(novaReceita);
+
+        // Criar um novo XML com as receitas atualizadas
+        CriarXML(xmlPath);
+
+        // Adicionar as receitas atualizadas ao XML
+        using (XmlWriter writer = XmlWriter.Create(xmlPath))
+        {
+            writer.WriteStartElement("receitas");
+            writer.WriteAttributeString("xmlns", "", null, "http://www.example.com/receitas");
+
+            foreach (Receita receita in receitas)
+            {
+                writer.WriteStartElement("receita");
+
+                writer.WriteStartElement("nome");
+                writer.WriteString(receita.Nome);
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("categoria");
+                writer.WriteString(receita.Categoria);
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("dificuldade");
+                writer.WriteString(receita.Dificuldade);
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("descrição");
+                writer.WriteString(receita.Descricao);
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("ingredientes");
+
+                foreach (Ingrediente ingrediente in receita.Ingredientes)
+                {
+                    writer.WriteStartElement("ingrediente");
+
+                    writer.WriteStartElement("nome");
+                    writer.WriteString(ingrediente.Nome);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("quantidade");
+                    writer.WriteString(ingrediente.Quantidade.ToString());
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("unidade");
+                    writer.WriteString(ingrediente.Unidade.Name);
+                    writer.WriteEndElement();
+
+                    writer.WriteEndElement();
+                }
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("preparação");
+                writer.WriteString(receita.Preparacao);
+                writer.WriteEndElement();
+
+                writer.WriteEndElement();
+            }
+
+            writer.WriteEndElement();
+            writer.Flush();
+        }
+    }
+
 }

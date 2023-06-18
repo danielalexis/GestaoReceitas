@@ -37,15 +37,17 @@
             lblBemVindo = new Label();
             btnNovaReceita = new Button();
             button1 = new Button();
+            pictureBox1 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // lstViewReceitas
             // 
             lstViewReceitas.Columns.AddRange(new ColumnHeader[] { receitaNome, categoria, dificuldade, tempoPreparacao, descricao });
             lstViewReceitas.FullRowSelect = true;
-            lstViewReceitas.Location = new Point(12, 56);
+            lstViewReceitas.Location = new Point(12, 75);
             lstViewReceitas.Name = "lstViewReceitas";
-            lstViewReceitas.Size = new Size(960, 435);
+            lstViewReceitas.Size = new Size(960, 400);
             lstViewReceitas.TabIndex = 0;
             lstViewReceitas.UseCompatibleStateImageBehavior = false;
             lstViewReceitas.View = View.Details;
@@ -81,7 +83,7 @@
             // 
             lblBemVindo.AutoSize = true;
             lblBemVindo.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
-            lblBemVindo.Location = new Point(12, 20);
+            lblBemVindo.Location = new Point(12, 34);
             lblBemVindo.Name = "lblBemVindo";
             lblBemVindo.Size = new Size(124, 30);
             lblBemVindo.TabIndex = 1;
@@ -89,7 +91,7 @@
             // 
             // btnNovaReceita
             // 
-            btnNovaReceita.Location = new Point(691, 20);
+            btnNovaReceita.Location = new Point(691, 481);
             btnNovaReceita.Name = "btnNovaReceita";
             btnNovaReceita.Size = new Size(98, 30);
             btnNovaReceita.TabIndex = 2;
@@ -98,18 +100,29 @@
             // 
             // button1
             // 
-            button1.Location = new Point(795, 20);
+            button1.Location = new Point(795, 481);
             button1.Name = "button1";
             button1.Size = new Size(177, 30);
             button1.TabIndex = 3;
             button1.Text = "Apagar receita selecionada";
             button1.UseVisualStyleBackColor = true;
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = Properties.Resources.User;
+            pictureBox1.Location = new Point(915, 12);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(57, 52);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 4;
+            pictureBox1.TabStop = false;
+            // 
             // Dashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(984, 503);
+            ClientSize = new Size(984, 523);
+            Controls.Add(pictureBox1);
             Controls.Add(button1);
             Controls.Add(btnNovaReceita);
             Controls.Add(lblBemVindo);
@@ -117,6 +130,7 @@
             Name = "Dashboard";
             Text = "Receitas";
             Load += Dashboard_Load;
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -132,5 +146,6 @@
         private Label lblBemVindo;
         private Button btnNovaReceita;
         private Button button1;
+        private PictureBox pictureBox1;
     }
 }
