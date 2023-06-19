@@ -129,6 +129,7 @@
             Controls.Add(lblLogin);
             Controls.Add(lblTitulo);
             Controls.Add(txtPassword);
+            MaximizeBox = false;
             Name = "LoginForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Gestão de Receitas";

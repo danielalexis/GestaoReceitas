@@ -14,5 +14,8 @@ public class Utilizador
         Username = username;
         Password = password;
     }
+
+    public Boolean Autenticar() { return true; }
+
 }
 
