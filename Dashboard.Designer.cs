@@ -37,8 +37,8 @@
             lblBemVindo = new Label();
             btnNovaReceita = new Button();
             button1 = new Button();
-            pictureBox1 = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            picUserMenu = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)picUserMenu).BeginInit();
             SuspendLayout();
             // 
             // lstViewReceitas
@@ -107,22 +107,23 @@
             button1.Text = "Apagar receita selecionada";
             button1.UseVisualStyleBackColor = true;
             // 
-            // pictureBox1
+            // picUserMenu
             // 
-            pictureBox1.Image = Properties.Resources.User;
-            pictureBox1.Location = new Point(915, 12);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(57, 52);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.TabIndex = 4;
-            pictureBox1.TabStop = false;
+            picUserMenu.Image = Properties.Resources.User;
+            picUserMenu.Location = new Point(915, 12);
+            picUserMenu.Name = "picUserMenu";
+            picUserMenu.Size = new Size(57, 52);
+            picUserMenu.SizeMode = PictureBoxSizeMode.StretchImage;
+            picUserMenu.TabIndex = 4;
+            picUserMenu.TabStop = false;
+            picUserMenu.Click += picUserMenu_Click;
             // 
             // Dashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 523);
-            Controls.Add(pictureBox1);
+            Controls.Add(picUserMenu);
             Controls.Add(button1);
             Controls.Add(btnNovaReceita);
             Controls.Add(lblBemVindo);
@@ -130,7 +131,7 @@
             Name = "Dashboard";
             Text = "Receitas";
             Load += Dashboard_Load;
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)picUserMenu).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -146,6 +147,6 @@
         private Label lblBemVindo;
         private Button btnNovaReceita;
         private Button button1;
-        private PictureBox pictureBox1;
+        private PictureBox picUserMenu;
     }
 }

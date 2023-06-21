@@ -1,6 +1,6 @@
 ﻿namespace GestaoReceitas
 {
-    partial class LoginForm
+    partial class Login
     {
         /// <summary>
         ///  Required designer variable.

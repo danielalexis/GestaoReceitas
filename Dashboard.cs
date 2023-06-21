@@ -126,9 +126,10 @@ namespace GestaoReceitas
             //item.SubItems[];
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void picUserMenu_Click(object sender, EventArgs e)
         {
-
+            MenuUtilizador menuUtilizador = new MenuUtilizador();
+            menuUtilizador.Show();
         }
     }
 
