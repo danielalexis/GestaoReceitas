@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GestaoReceitas.XMLHandler;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,60 +9,44 @@ using System.Xml.Schema;
 
 public class Utilizador
 {
+    public int Id { get; set; }
+    public string Nome { get; set; }
     public string Username { get; set; }
     public string Password { get; set; }
-    public string Id { get; set; }
-    public string Nome { get; set; }
     public Utilizador(string username, string password)
     {
         Username = username;
         Password = password;
     }
 
-    private static void CriarXML(string xmlPath)
-    {
-        if (!File.Exists(xmlPath))
-        {
-            XmlWriter writer = XmlWriter.Create(xmlPath);
-            // Escrever o elemento raiz e definir o namespace, se necessário
-            writer.WriteStartElement("receitas");
-            writer.WriteAttributeString("xmlns", "http://tempuri.org/Receitas.xsd");
-
-            // Finalizar a escrita e fechar o escritor XML
-            writer.WriteEndElement();
-            writer.Flush();
-        }
-    }
-
     public bool Autenticar(string xmlPath, string xsdPath) {
-        CriarXML(xmlPath);
+        XMLHandler.CriarXML(xmlPath, xsdPath);
         // Carrega o xml e o xsd
         XmlSchemaSet schemaSet = new XmlSchemaSet();
-        schemaSet.Add("", xsdPath);
+        schemaSet.Add(XMLHandler.TargetNamespace(xsdPath), xsdPath);
 
         // Realizar a validação do XML de acordo com o XSD
         XmlReaderSettings settings = new XmlReaderSettings();
         settings.ValidationType = ValidationType.Schema;
         settings.Schemas = schemaSet;
         settings.ValidationEventHandler += (sender, e) => {
-            throw new Exception(e.Message);
         };
         // Procura o utilizador no xml
         XmlReader reader = XmlReader.Create(xmlPath, settings);
         while (reader.ReadToFollowing("utilizador"))
         {
+            reader.ReadToDescendant("id");
+            int id = reader.ReadElementContentAsInt();
+            reader.ReadToDescendant("nome");
+            string nome = reader.ReadElementContentAsString();
             reader.ReadToDescendant("username");
             string username = reader.ReadElementContentAsString();
             reader.ReadToNextSibling("password");
             string password = reader.ReadElementContentAsString();
             if (username == Username && password == Password)
             {
-                // Define o id do utilizador
-                reader.ReadToNextSibling("id");
-                Id = reader.ReadElementContentAsString();
-                // Define o nome do utilizador
-                reader.ReadToNextSibling("nome");
-                Nome = reader.ReadElementContentAsString();
+                Id = id;
+                Nome = nome;
                 return true;
             }
         }
@@ -69,10 +54,10 @@ public class Utilizador
 
     }
 
-    public static void Criar(string xmlPath, string xsdPath)
+    public static void Criar(string xmlPath, string xsdPath, string nome, string username, string password)
     {
         // Adiciona um novo utilizador ao xml
-        CriarXML(xmlPath);
+        XMLHandler.CriarXML(xmlPath, xsdPath);
         // Carrega o xml e o xsd
         XmlSchemaSet schemaSet = new XmlSchemaSet();
         schemaSet.Add("", xsdPath);
@@ -101,10 +86,12 @@ public class Utilizador
         XmlElement utilizador = doc.CreateElement("utilizador");
         XmlElement idElement = doc.CreateElement("id");
         idElement.InnerText = (id + 1).ToString();
+        XmlElement nomeElement = doc.CreateElement("username");
+        nomeElement.InnerText = nome;
         XmlElement usernameElement = doc.CreateElement("username");
-        usernameElement.InnerText = Username;
+        usernameElement.InnerText = username;
         XmlElement passwordElement = doc.CreateElement("password");
-        passwordElement.InnerText = Password;
+        passwordElement.InnerText = password;
         utilizador.AppendChild(idElement);
         utilizador.AppendChild(usernameElement);
         utilizador.AppendChild(passwordElement);
@@ -115,7 +102,7 @@ public class Utilizador
     public void AlterarNomeUtilizador(string xmlPath, string xsdPath)
     {
         // Criar XML
-        CriarXML(xmlPath);
+        XMLHandler.CriarXML(xmlPath, xsdPath);
         XmlDocument doc = new XmlDocument();
         doc.LoadXml(xmlPath);
         // Alterar o nome do utilizador

@@ -38,12 +38,13 @@
             btnNovaReceita = new Button();
             button1 = new Button();
             picUserMenu = new PictureBox();
+            id = new ColumnHeader();
             ((System.ComponentModel.ISupportInitialize)picUserMenu).BeginInit();
             SuspendLayout();
             // 
             // lstViewReceitas
             // 
-            lstViewReceitas.Columns.AddRange(new ColumnHeader[] { receitaNome, categoria, dificuldade, tempoPreparacao, descricao });
+            lstViewReceitas.Columns.AddRange(new ColumnHeader[] { id, receitaNome, categoria, dificuldade, tempoPreparacao, descricao });
             lstViewReceitas.FullRowSelect = true;
             lstViewReceitas.Location = new Point(12, 75);
             lstViewReceitas.Name = "lstViewReceitas";
@@ -57,7 +58,7 @@
             // receitaNome
             // 
             receitaNome.Text = "Nome";
-            receitaNome.Width = 248;
+            receitaNome.Width = 45;
             // 
             // categoria
             // 
@@ -77,7 +78,7 @@
             // descricao
             // 
             descricao.Text = "Descrição";
-            descricao.Width = 393;
+            descricao.Width = 624;
             // 
             // lblBemVindo
             // 
@@ -118,6 +119,11 @@
             picUserMenu.TabStop = false;
             picUserMenu.Click += picUserMenu_Click;
             // 
+            // id
+            // 
+            id.Text = "ID";
+            id.Width = 25;
+            // 
             // Dashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -148,5 +154,6 @@
         private Button btnNovaReceita;
         private Button button1;
         private PictureBox picUserMenu;
+        private ColumnHeader id;
     }
 }

@@ -50,7 +50,8 @@ namespace GestaoReceitas
             List<Receitas.Receita> listaReceitas = receitas.ListaReceitas("receitas.xml", "ReceitasSchema.xsd");
             foreach (Receitas.Receita receita in listaReceitas)
             {
-                ListViewItem item = new ListViewItem(receita.Nome);
+                ListViewItem item = new ListViewItem(receita.Id.ToString());
+                item.SubItems.Add(receita.Nome);
                 item.SubItems.Add(receita.Categoria);
                 item.SubItems.Add(receita.Dificuldade);
                 item.SubItems.Add(receita.Tempo);
@@ -113,6 +114,7 @@ namespace GestaoReceitas
 
         private void lstViewReceitas_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+
             /*if (lstViewReceitas.SelectedItems.Count == 1) {
                 
                 ListViewItem.ListViewSubItemCollection items = ((ListViewI)sender).SubItems;

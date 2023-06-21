@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
+using GestaoReceitas.XMLHandler;
 
 public class Receitas
 {
@@ -42,33 +43,20 @@ public class Receitas
 
     public struct Receita
     {
+        public int    Id { get; set; }
         public string Nome { get; set; }
         public string Categoria { get; set; }
         public string Dificuldade { get; set; }
-
+        public float  Porcoes { get; set; }
         public string Tempo { get; set; }
         public string Descricao { get; set; }
         public List<Ingrediente> Ingredientes { get; set; }
         public string Preparacao { get; set; }
     }
 
-    private void CriarXML(string xmlPath) {
-        if (!File.Exists(xmlPath)) {
-            using (XmlWriter writer = XmlWriter.Create(xmlPath)) {
-                // Escrever o elemento raiz e definir o namespace, se necessário
-                writer.WriteStartElement("receitas");
-                writer.WriteAttributeString("xmlns", "http://tempuri.org/Receitas.xsd");
-
-                // Finalizar a escrita e fechar o escritor XML
-                writer.WriteEndElement();
-                writer.Flush();
-            }
-        }
-    }
-
     public List<Receita> ListaReceitas(string xmlPath, string xsdPath)
     {
-        CriarXML(xmlPath);
+        XMLHandler.CriarXML(xmlPath, xsdPath);
         List<Receita> receitas = new List<Receita>();
 
         // Carregar o esquema XSD
@@ -90,6 +78,9 @@ public class Receitas
             {
                 Receita receita = new Receita();
 
+                reader.ReadToDescendant("id");
+                receita.Id = reader.ReadElementContentAsInt();
+
                 reader.ReadToDescendant("nome");
                 receita.Nome = reader.ReadElementContentAsString();
 
@@ -99,8 +90,11 @@ public class Receitas
                 reader.ReadToNextSibling("dificuldade");
                 receita.Dificuldade = reader.ReadElementContentAsString();
 
+                reader.ReadToNextSibling("porcoes");
+                receita.Porcoes = reader.ReadElementContentAsFloat();
+
                 reader.ReadToNextSibling("tempo");
-                receita.Dificuldade = reader.ReadElementContentAsString();
+                receita.Tempo = reader.ReadElementContentAsString();
 
                 reader.ReadToNextSibling("descrição");
                 receita.Descricao = reader.ReadElementContentAsString();
@@ -156,7 +150,7 @@ public class Receitas
     }
 
 
-    public void AdicionarReceita(string xmlPath, Receita novaReceita)
+    public void AdicionarReceita(string xmlPath, string xsdPath, Receita novaReceita)
     {
         // Carregar as receitas existentes do arquivo XML
         List<Receita> receitas = ListaReceitas(xmlPath, "ReceitasSchema.xsd");
@@ -165,7 +159,7 @@ public class Receitas
         receitas.Add(novaReceita);
 
         // Criar um novo XML com as receitas atualizadas
-        CriarXML(xmlPath);
+        XMLHandler.CriarXML(xmlPath, xsdPath);
 
         // Adicionar as receitas atualizadas ao XML
         using (XmlWriter writer = XmlWriter.Create(xmlPath))

@@ -21,32 +21,40 @@
 			<xs:enumeration value="Unidades"/>
 		</xs:restriction>
 	</xs:simpleType>
-	
-	<!-- Definição do elemento "receita" -->
-	<xs:element name="receita">
+
+	<!-- Definição do elemento "receitas" como container para múltiplas "receita" -->
+	<xs:element name="receitas">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="nome" type="xs:string"/>
-				<xs:element name="categoria" type="xs:string"/>
-				<xs:element name="dificuldade" type="xs:string"/>
-				<xs:element name="tempo" type="xs:string"/>
-				<xs:element name="descrição" type="xs:string"/>
-				<xs:element name="ingredientes">
+				<xs:element name="receita" maxOccurs="unbounded">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="ingrediente" maxOccurs="unbounded">
+							<xs:element name="id" type="xs:int"/>
+							<xs:element name="nome" type="xs:string"/>
+							<xs:element name="categoria" type="xs:string"/>
+							<xs:element name="dificuldade" type="xs:string"/>
+							<xs:element name="porcoes" type="xs:decimal"/>
+							<xs:element name="tempo" type="xs:string"/>
+							<xs:element name="descrição" type="xs:string"/>
+							<xs:element name="ingredientes">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="nome" type="xs:string"/>
-										<xs:element name="quantidade" type="xs:decimal"/>
-										<xs:element name="unidade" type="unidade"/>
+										<xs:element name="ingrediente" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="nome" type="xs:string"/>
+													<xs:element name="quantidade" type="xs:decimal"/>
+													<xs:element name="unidade" type="unidade"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
+							<xs:element name="preparação" type="xs:string"/>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="preparação" type="xs:string"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
