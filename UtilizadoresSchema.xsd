@@ -11,7 +11,7 @@
 	<xs:element name="utilizadores">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="utilizador" maxOccurs="unbounded">
+				<xs:element name="utilizador" minOccurs="0" maxOccurs="unbounded">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="id" type="xs:int"/>

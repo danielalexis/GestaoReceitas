@@ -45,7 +45,7 @@
             btnRegisto.Location = new Point(388, 406);
             btnRegisto.Name = "btnRegisto";
             btnRegisto.Size = new Size(223, 46);
-            btnRegisto.TabIndex = 14;
+            btnRegisto.TabIndex = 3;
             btnRegisto.Text = "Registo";
             btnRegisto.UseVisualStyleBackColor = true;
             btnRegisto.Click += btnRegisto_Click;
@@ -55,7 +55,7 @@
             txtUsername.Location = new Point(388, 287);
             txtUsername.Name = "txtUsername";
             txtUsername.Size = new Size(223, 23);
-            txtUsername.TabIndex = 9;
+            txtUsername.TabIndex = 1;
             // 
             // lblPassword
             // 
@@ -103,7 +103,7 @@
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '*';
             txtPassword.Size = new Size(223, 23);
-            txtPassword.TabIndex = 11;
+            txtPassword.TabIndex = 2;
             txtPassword.UseSystemPasswordChar = true;
             // 
             // txtNome
@@ -111,7 +111,7 @@
             txtNome.Location = new Point(387, 226);
             txtNome.Name = "txtNome";
             txtNome.Size = new Size(223, 23);
-            txtNome.TabIndex = 17;
+            txtNome.TabIndex = 0;
             // 
             // lblNome
             // 

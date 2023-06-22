@@ -61,7 +61,7 @@ public class Receitas
 
         // Carregar o esquema XSD
         XmlSchemaSet schemaSet = new XmlSchemaSet();
-        schemaSet.Add("", xsdPath);
+        schemaSet.Add(XMLHandler.TargetNamespace(xsdPath), xsdPath);
 
         // Realizar a validação do XML de acordo com o XSD
         XmlReaderSettings settings = new XmlReaderSettings();

@@ -37,9 +37,9 @@ public class Utilizador
         {
             reader.ReadToDescendant("id");
             int id = reader.ReadElementContentAsInt();
-            reader.ReadToDescendant("nome");
+            reader.ReadToNextSibling("nome");
             string nome = reader.ReadElementContentAsString();
-            reader.ReadToDescendant("username");
+            reader.ReadToNextSibling("username");
             string username = reader.ReadElementContentAsString();
             reader.ReadToNextSibling("password");
             string password = reader.ReadElementContentAsString();
@@ -50,6 +50,7 @@ public class Utilizador
                 return true;
             }
         }
+        reader.Close();
         return false;
 
     }
@@ -60,7 +61,7 @@ public class Utilizador
         XMLHandler.CriarXML(xmlPath, xsdPath);
         // Carrega o xml e o xsd
         XmlSchemaSet schemaSet = new XmlSchemaSet();
-        schemaSet.Add("", xsdPath);
+        schemaSet.Add(XMLHandler.TargetNamespace(xsdPath), xsdPath);
         XmlReaderSettings settings = new XmlReaderSettings();
         settings.ValidationType = ValidationType.Schema;
         settings.Schemas = schemaSet;
@@ -75,24 +76,39 @@ public class Utilizador
         int id = 0;
         while (reader.ReadToFollowing("utilizador"))
         {
+
+
+            // Lê o  ultimo id
             reader.ReadToDescendant("id");
-            int idTemp = int.Parse(reader.ReadElementContentAsString());
+            int idTemp = reader.ReadElementContentAsInt();
             if (idTemp > id)
             {
                 id = idTemp;
             }
+
+            // Verifica se o utilizador já existe através do username
+            reader.ReadToNextSibling("username");
+            string usernameTemp = reader.ReadElementContentAsString();
+            if (usernameTemp == username)
+            {
+                throw new Exception("O utilizador já existe");
+            }
+
         }
+        reader.Close();
+
         // Cria o novo utilizador
-        XmlElement utilizador = doc.CreateElement("utilizador");
-        XmlElement idElement = doc.CreateElement("id");
+        XmlElement utilizador = doc.CreateElement("utilizador", XMLHandler.TargetNamespace(xsdPath));
+        XmlElement idElement = doc.CreateElement("id", XMLHandler.TargetNamespace(xsdPath));
         idElement.InnerText = (id + 1).ToString();
-        XmlElement nomeElement = doc.CreateElement("username");
+        XmlElement nomeElement = doc.CreateElement("nome", XMLHandler.TargetNamespace(xsdPath));
         nomeElement.InnerText = nome;
-        XmlElement usernameElement = doc.CreateElement("username");
+        XmlElement usernameElement = doc.CreateElement("username", XMLHandler.TargetNamespace(xsdPath));
         usernameElement.InnerText = username;
-        XmlElement passwordElement = doc.CreateElement("password");
+        XmlElement passwordElement = doc.CreateElement("password", XMLHandler.TargetNamespace(xsdPath));
         passwordElement.InnerText = password;
         utilizador.AppendChild(idElement);
+        utilizador.AppendChild(nomeElement);
         utilizador.AppendChild(usernameElement);
         utilizador.AppendChild(passwordElement);
         doc.DocumentElement.AppendChild(utilizador);
