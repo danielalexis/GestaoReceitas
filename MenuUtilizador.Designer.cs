@@ -34,7 +34,7 @@
             lblId = new Label();
             txtId = new TextBox();
             txtUsername = new TextBox();
-            textBox3 = new TextBox();
+            txtNovaPassword = new TextBox();
             txtNome = new TextBox();
             btnGravar = new Button();
             SuspendLayout();
@@ -95,12 +95,12 @@
             txtUsername.Size = new Size(182, 23);
             txtUsername.TabIndex = 5;
             // 
-            // textBox3
+            // txtNovaPassword
             // 
-            textBox3.Location = new Point(178, 169);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(182, 23);
-            textBox3.TabIndex = 6;
+            txtNovaPassword.Location = new Point(178, 169);
+            txtNovaPassword.Name = "txtNovaPassword";
+            txtNovaPassword.Size = new Size(182, 23);
+            txtNovaPassword.TabIndex = 6;
             // 
             // txtNome
             // 
@@ -117,6 +117,7 @@
             btnGravar.TabIndex = 8;
             btnGravar.Text = "Gravar";
             btnGravar.UseVisualStyleBackColor = true;
+            btnGravar.Click += btnGravar_Click;
             // 
             // MenuUtilizador
             // 
@@ -125,7 +126,7 @@
             ClientSize = new Size(463, 303);
             Controls.Add(btnGravar);
             Controls.Add(txtNome);
-            Controls.Add(textBox3);
+            Controls.Add(txtNovaPassword);
             Controls.Add(txtUsername);
             Controls.Add(txtId);
             Controls.Add(lblId);
@@ -146,7 +147,7 @@
         private Label lblId;
         private TextBox txtId;
         private TextBox txtUsername;
-        private TextBox textBox3;
+        private TextBox txtNovaPassword;
         private TextBox txtNome;
         private Button btnGravar;
     }

@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using System.Xml;
 
 namespace GestaoReceitas
@@ -13,6 +15,16 @@ namespace GestaoReceitas
         private void btnLogin_Click(object sender, EventArgs e)
         {
             // Verificar se o nome de utilizador está correto
+            // Encriptar a password em SHA256
+            SHA256 sha256 = SHA256.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(txtPassword.Text);
+            byte[] hash = sha256.ComputeHash(bytes);
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in hash)
+            {
+                sb.Append(b.ToString("X2"));
+            }
+            txtPassword.Text = sb.ToString();
             Utilizador utilizador = new Utilizador(txtUsername.Text, txtPassword.Text);
             bool auth = utilizador.Autenticar("utilizadores.xml", "UtilizadoresSchema.xsd");
             if (auth && count <= 3) {

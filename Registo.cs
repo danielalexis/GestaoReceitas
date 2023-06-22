@@ -35,14 +35,12 @@ namespace GestaoReceitas
                 sb.Append(b.ToString("X2"));
             }
             txtPassword.Text = sb.ToString();
-            /*try
-            {
-                */
-            Utilizador.Criar("utilizadores.xml", "UtilizadoresSchema.xsd", txtNome.Text, txtUsername.Text, txtPassword.Text);
-            /*} catch (Exception err)
-            {
+            try {
+                Utilizador.Criar("utilizadores.xml", "UtilizadoresSchema.xsd", txtNome.Text, txtUsername.Text, txtPassword.Text);
+                MessageBox.Show("Utilizador criado com sucesso", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            } catch (Exception err) {
                 MessageBox.Show(err.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }*/
+            }
         }
     }
 }

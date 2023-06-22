@@ -45,7 +45,7 @@ namespace GestaoReceitas
 
         private void Dashboard_Load(object sender, EventArgs e)
         {
-            lblBemVindo.Text += utilizador.Username;
+            lblBemVindo.Text += utilizador.Nome;
             Receitas receitas = new Receitas();
             List<Receitas.Receita> listaReceitas = receitas.ListaReceitas("receitas.xml", "ReceitasSchema.xsd");
             foreach (Receitas.Receita receita in listaReceitas)
@@ -130,7 +130,7 @@ namespace GestaoReceitas
 
         private void picUserMenu_Click(object sender, EventArgs e)
         {
-            MenuUtilizador menuUtilizador = new MenuUtilizador();
+            MenuUtilizador menuUtilizador = new MenuUtilizador(utilizador);
             menuUtilizador.Show();
         }
     }

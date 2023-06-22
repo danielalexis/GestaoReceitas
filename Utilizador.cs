@@ -115,15 +115,59 @@ public class Utilizador
         doc.Save(xmlPath);
     }
 
-    public void AlterarNomeUtilizador(string xmlPath, string xsdPath)
+    public void AlterarDados(string xmlPath, string xsdPath, string novoNome, string novaPassword = null)
     {
-        // Criar XML
-        XMLHandler.CriarXML(xmlPath, xsdPath);
+        // Carrega o xml e o xsd
+        XmlSchemaSet schemaSet = new XmlSchemaSet();
+        schemaSet.Add(XMLHandler.TargetNamespace(xsdPath), xsdPath);
+
+        // Realizar a validação do XML de acordo com o XSD
+        XmlReaderSettings settings = new XmlReaderSettings();
+        settings.ValidationType = ValidationType.Schema;
+        settings.Schemas = schemaSet;
+        settings.ValidationEventHandler += (sender, e) => {
+            // Lidar com erros de validação, se necessário
+        };
+
+        // Procura o utilizador no xml
         XmlDocument doc = new XmlDocument();
-        doc.LoadXml(xmlPath);
-        // Alterar o nome do utilizador
+        doc.Load(xmlPath);
+        XmlElement utilizadoresElement = doc.DocumentElement;
 
+        foreach (XmlNode utilizadorNode in utilizadoresElement.ChildNodes)
+        {
+            XmlNode nomeNode = utilizadorNode.SelectSingleNode("nome");
+            XmlNode passwordNode = utilizadorNode.SelectSingleNode("password");
 
+            //NÃO FUCIONA VERIFICAR PORQUE
+            string username = utilizadorNode.SelectSingleNode("username")?.InnerText; // Adiciona o operador "?." para tratar o valor nulo
+            
+            if (username == Username)
+            {
+                // Atualiza o nome, se fornecido
+                if (!string.IsNullOrEmpty(novoNome))
+                    nomeNode.Value = novoNome;
+
+                // Atualiza a senha, se fornecida
+                if (!string.IsNullOrEmpty(novaPassword))
+                    passwordNode.Value = novaPassword;
+
+                // Salva as alterações no arquivo XML
+                doc.Save(xmlPath);
+
+                // Atualiza as propriedades do objeto Utilizador
+                if (!string.IsNullOrEmpty(novoNome))
+                    Nome = novoNome;
+
+                if (!string.IsNullOrEmpty(novaPassword))
+                    Password = novaPassword;
+                return;
+            }
+        }
+
+        // Se o utilizador não for encontrado, pode lançar uma exceção ou lidar com a situação de outra forma
+        throw new Exception("Utilizador não encontrado no XML.");
     }
+
 }
 

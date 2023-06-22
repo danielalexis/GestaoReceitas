@@ -37,21 +37,21 @@ public class Receitas
     public struct Ingrediente
     {
         public string Nome { get; set; }
-        public float Quantidade { get; set; }
+        public decimal Quantidade { get; set; }
         public IngredienteUnidade Unidade { get; set; }
     }
 
     public struct Receita
     {
-        public int    Id { get; set; }
-        public string Nome { get; set; }
-        public string Categoria { get; set; }
-        public string Dificuldade { get; set; }
-        public float  Porcoes { get; set; }
-        public string Tempo { get; set; }
-        public string Descricao { get; set; }
+        public int     Id { get; set; }
+        public string  Nome { get; set; }
+        public string  Categoria { get; set; }
+        public string  Dificuldade { get; set; }
+        public decimal Porcoes { get; set; }
+        public string  Tempo { get; set; }
+        public string  Descricao { get; set; }
         public List<Ingrediente> Ingredientes { get; set; }
-        public string Preparacao { get; set; }
+        public string  Preparacao { get; set; }
     }
 
     public List<Receita> ListaReceitas(string xmlPath, string xsdPath)
@@ -81,7 +81,7 @@ public class Receitas
                 reader.ReadToDescendant("id");
                 receita.Id = reader.ReadElementContentAsInt();
 
-                reader.ReadToDescendant("nome");
+                reader.ReadToNextSibling("nome");
                 receita.Nome = reader.ReadElementContentAsString();
 
                 reader.ReadToNextSibling("categoria");
@@ -91,7 +91,7 @@ public class Receitas
                 receita.Dificuldade = reader.ReadElementContentAsString();
 
                 reader.ReadToNextSibling("porcoes");
-                receita.Porcoes = reader.ReadElementContentAsFloat();
+                receita.Porcoes = reader.ReadElementContentAsDecimal();
 
                 reader.ReadToNextSibling("tempo");
                 receita.Tempo = reader.ReadElementContentAsString();
@@ -108,19 +108,32 @@ public class Receitas
                     {
                         Ingrediente ingrediente = new Ingrediente();
 
-                        reader.ReadToDescendant("nome");
-                        ingrediente.Nome = reader.ReadElementContentAsString();
-
-                        reader.ReadToNextSibling("quantidade");
-                        ingrediente.Quantidade = reader.ReadElementContentAsFloat();
-
-                        reader.ReadToNextSibling("unidade");
-                        ingrediente.Unidade = ParseIngredienteUnidade(reader.ReadElementContentAsString());
+                        while (reader.Read())
+                        {
+                            if (reader.NodeType == XmlNodeType.Element)
+                            {
+                                switch (reader.Name)
+                                {
+                                    case "nome":
+                                        ingrediente.Nome = reader.ReadElementContentAsString();
+                                        break;
+                                    case "quantidade":
+                                        ingrediente.Quantidade = reader.ReadElementContentAsDecimal();
+                                        break;
+                                    case "unidade":
+                                        ingrediente.Unidade = ParseIngredienteUnidade(reader.ReadElementContentAsString());
+                                        break;
+                                }
+                            }
+                            else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "ingrediente")
+                            {
+                                break;
+                            }
+                        }
 
                         receita.Ingredientes.Add(ingrediente);
                     } while (reader.ReadToNextSibling("ingrediente"));
                 }
-
                 reader.ReadToNextSibling("preparação");
                 receita.Preparacao = reader.ReadElementContentAsString();
 
