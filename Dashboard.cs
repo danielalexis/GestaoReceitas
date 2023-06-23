@@ -46,16 +46,16 @@ namespace GestaoReceitas
         private void Dashboard_Load(object sender, EventArgs e)
         {
             lblBemVindo.Text += utilizador.Nome;
-            Receitas receitas = new Receitas();
-            List<Receitas.Receita> listaReceitas = receitas.ListaReceitas("receitas.xml", "ReceitasSchema.xsd");
-            foreach (Receitas.Receita receita in listaReceitas)
+            Receita receita = new Receita();
+            List<Receita> listaReceitas = Receita.ListaReceitas("receitas.xml", "ReceitasSchema.xsd");
+            foreach (Receita receitaloop in listaReceitas)
             {
-                ListViewItem item = new ListViewItem(receita.Id.ToString());
-                item.SubItems.Add(receita.Nome);
-                item.SubItems.Add(receita.Categoria);
-                item.SubItems.Add(receita.Dificuldade);
-                item.SubItems.Add(receita.Tempo);
-                item.SubItems.Add(receita.Descricao);
+                ListViewItem item = new ListViewItem(receitaloop.Id.ToString());
+                item.SubItems.Add(receitaloop.Nome);
+                item.SubItems.Add(receitaloop.Categoria);
+                item.SubItems.Add(receitaloop.Dificuldade);
+                item.SubItems.Add(receitaloop.Tempo);
+                item.SubItems.Add(receitaloop.Descricao);
                 lstViewReceitas.Items.Add(item);
             }
 
@@ -112,7 +112,7 @@ namespace GestaoReceitas
 
         private void btnNovaReceita_Click(object sender, EventArgs e)
         {
-            new Receita().Show();
+            new VerReceita().Show();
         }
 
         private void btnApagarReceita_Click(object sender, EventArgs e)
@@ -124,9 +124,10 @@ namespace GestaoReceitas
 
 
                 // Reload das receitas
-                Receitas receitas = new Receitas();
-                List<Receitas.Receita> listaReceitas = receitas.ListaReceitas("receitas.xml", "ReceitasSchema.xsd");
-                foreach (Receitas.Receita receita in listaReceitas)
+                // Elimitar todas as receitas da listview
+                lstViewReceitas.Items.Clear();
+                List<Receita> listaReceitas = Receita.ListaReceitas("receitas.xml", "ReceitasSchema.xsd");
+                foreach (Receita receita in listaReceitas)
                 {
                     ListViewItem item = new ListViewItem(receita.Id.ToString());
                     item.SubItems.Add(receita.Nome);
