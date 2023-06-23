@@ -61,30 +61,6 @@ namespace GestaoReceitas
 
         }
 
-        private bool checkFile(string filePath)
-        {
-            if (!File.Exists(filePath))
-            {
-                try
-                {
-                    StreamWriter sw = new StreamWriter(filePath);
-                    sw.WriteLine("username,password");
-                    sw.Close();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Erro a criar ficheiro de utilizadores.\n" + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-
 
         private void lstViewReceitas_ColumnClick(object sender, ColumnClickEventArgs e)
         {
@@ -132,6 +108,39 @@ namespace GestaoReceitas
         {
             MenuUtilizador menuUtilizador = new MenuUtilizador(utilizador);
             menuUtilizador.Show();
+        }
+
+        private void btnNovaReceita_Click(object sender, EventArgs e)
+        {
+            new Receita().Show();
+        }
+
+        private void btnApagarReceita_Click(object sender, EventArgs e)
+        {
+            if (lstViewReceitas.SelectedItems.Count == 1)
+            {
+                // lstViewReceitas.SelectedItems.SelectItemArray[0] é o id da receita
+                // Apagar a receita do XML
+
+
+                // Reload das receitas
+                Receitas receitas = new Receitas();
+                List<Receitas.Receita> listaReceitas = receitas.ListaReceitas("receitas.xml", "ReceitasSchema.xsd");
+                foreach (Receitas.Receita receita in listaReceitas)
+                {
+                    ListViewItem item = new ListViewItem(receita.Id.ToString());
+                    item.SubItems.Add(receita.Nome);
+                    item.SubItems.Add(receita.Categoria);
+                    item.SubItems.Add(receita.Dificuldade);
+                    item.SubItems.Add(receita.Tempo);
+                    item.SubItems.Add(receita.Descricao);
+                    lstViewReceitas.Items.Add(item);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Selecione uma receita para apagar", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 

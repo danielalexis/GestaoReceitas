@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
+using System.Xml.XPath;
 
 public class Utilizador
 {
@@ -47,6 +48,7 @@ public class Utilizador
             {
                 Id = id;
                 Nome = nome;
+                reader.Close();
                 return true;
             }
         }
@@ -91,6 +93,7 @@ public class Utilizador
             string usernameTemp = reader.ReadElementContentAsString();
             if (usernameTemp == username)
             {
+                reader.Close();
                 throw new Exception("O utilizador já existe");
             }
 
@@ -115,7 +118,7 @@ public class Utilizador
         doc.Save(xmlPath);
     }
 
-    public void AlterarDados(string xmlPath, string xsdPath, string novoNome, string novaPassword = null)
+    public void AlterarDados(string xmlPath, string xsdPath, int userId, string novoNome, string novaPassword = null)
     {
         // Carrega o xml e o xsd
         XmlSchemaSet schemaSet = new XmlSchemaSet();
@@ -127,46 +130,38 @@ public class Utilizador
         settings.Schemas = schemaSet;
         settings.ValidationEventHandler += (sender, e) => {
             // Lidar com erros de validação, se necessário
+            throw new Exception(e.Message);
         };
 
         // Procura o utilizador no xml
         XmlDocument doc = new XmlDocument();
         doc.Load(xmlPath);
-        XmlElement utilizadoresElement = doc.DocumentElement;
-
-        foreach (XmlNode utilizadorNode in utilizadoresElement.ChildNodes)
+        XmlNodeList utilizadores = doc.DocumentElement.GetElementsByTagName("utilizador");
+        foreach (XmlNode utilizadorNode in utilizadores)
         {
-            XmlNode nomeNode = utilizadorNode.SelectSingleNode("nome");
-            XmlNode passwordNode = utilizadorNode.SelectSingleNode("password");
-
-            //NÃO FUCIONA VERIFICAR PORQUE
-            string username = utilizadorNode.SelectSingleNode("username")?.InnerText; // Adiciona o operador "?." para tratar o valor nulo
-            
-            if (username == Username)
+            if (utilizadorNode.ChildNodes[0].InnerText == userId.ToString())
             {
-                // Atualiza o nome, se fornecido
-                if (!string.IsNullOrEmpty(novoNome))
-                    nomeNode.Value = novoNome;
+                // Altera o nome do utilizador
+                utilizadorNode.ChildNodes[1].InnerText = novoNome;
 
-                // Atualiza a senha, se fornecida
+                // Altera a senha do utilizador, se fornecida
                 if (!string.IsNullOrEmpty(novaPassword))
-                    passwordNode.Value = novaPassword;
+                {
+                    utilizadorNode.ChildNodes[3].InnerText = novaPassword;
+                }
 
-                // Salva as alterações no arquivo XML
+                // Salva as alterações no XML
                 doc.Save(xmlPath);
 
                 // Atualiza as propriedades do objeto Utilizador
-                if (!string.IsNullOrEmpty(novoNome))
-                    Nome = novoNome;
-
-                if (!string.IsNullOrEmpty(novaPassword))
-                    Password = novaPassword;
+                Id = userId;
+                Nome = novoNome;
+                Password = novaPassword;
                 return;
-            }
+            }   
         }
-
-        // Se o utilizador não for encontrado, pode lançar uma exceção ou lidar com a situação de outra forma
-        throw new Exception("Utilizador não encontrado no XML.");
+        doc.Save(xmlPath);
+        return;
     }
 
 }

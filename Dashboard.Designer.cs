@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             lstViewReceitas = new ListView();
+            id = new ColumnHeader();
             receitaNome = new ColumnHeader();
             categoria = new ColumnHeader();
             dificuldade = new ColumnHeader();
@@ -36,9 +37,8 @@
             descricao = new ColumnHeader();
             lblBemVindo = new Label();
             btnNovaReceita = new Button();
-            button1 = new Button();
+            btnApagarReceita = new Button();
             picUserMenu = new PictureBox();
-            id = new ColumnHeader();
             ((System.ComponentModel.ISupportInitialize)picUserMenu).BeginInit();
             SuspendLayout();
             // 
@@ -54,6 +54,11 @@
             lstViewReceitas.View = View.Details;
             lstViewReceitas.ColumnClick += lstViewReceitas_ColumnClick;
             lstViewReceitas.MouseDoubleClick += lstViewReceitas_MouseDoubleClick;
+            // 
+            // id
+            // 
+            id.Text = "ID";
+            id.Width = 25;
             // 
             // receitaNome
             // 
@@ -98,15 +103,17 @@
             btnNovaReceita.TabIndex = 2;
             btnNovaReceita.Text = "Criar Receita";
             btnNovaReceita.UseVisualStyleBackColor = true;
+            btnNovaReceita.Click += btnNovaReceita_Click;
             // 
-            // button1
+            // btnApagarReceita
             // 
-            button1.Location = new Point(795, 481);
-            button1.Name = "button1";
-            button1.Size = new Size(177, 30);
-            button1.TabIndex = 3;
-            button1.Text = "Apagar receita selecionada";
-            button1.UseVisualStyleBackColor = true;
+            btnApagarReceita.Location = new Point(795, 481);
+            btnApagarReceita.Name = "btnApagarReceita";
+            btnApagarReceita.Size = new Size(177, 30);
+            btnApagarReceita.TabIndex = 3;
+            btnApagarReceita.Text = "Apagar receita selecionada";
+            btnApagarReceita.UseVisualStyleBackColor = true;
+            btnApagarReceita.Click += btnApagarReceita_Click;
             // 
             // picUserMenu
             // 
@@ -119,18 +126,13 @@
             picUserMenu.TabStop = false;
             picUserMenu.Click += picUserMenu_Click;
             // 
-            // id
-            // 
-            id.Text = "ID";
-            id.Width = 25;
-            // 
             // Dashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 523);
             Controls.Add(picUserMenu);
-            Controls.Add(button1);
+            Controls.Add(btnApagarReceita);
             Controls.Add(btnNovaReceita);
             Controls.Add(lblBemVindo);
             Controls.Add(lstViewReceitas);
@@ -152,7 +154,7 @@
         private ColumnHeader categoria;
         private Label lblBemVindo;
         private Button btnNovaReceita;
-        private Button button1;
+        private Button btnApagarReceita;
         private PictureBox picUserMenu;
         private ColumnHeader id;
     }

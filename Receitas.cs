@@ -13,6 +13,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using GestaoReceitas.XMLHandler;
+using System.Configuration;
 
 public class Receitas
 {
@@ -20,7 +21,7 @@ public class Receitas
     {
         public static IngredienteUnidade Gramas => new(1, "Gramas");
         public static IngredienteUnidade Kilogramas => new(2, "Kilogramas");
-        public static IngredienteUnidade Miligramas => new(2, "Kilogramas");
+        public static IngredienteUnidade Miligramas => new(2, "Miiligramas");
         public static IngredienteUnidade Litros => new(2, "Litros");
         public static IngredienteUnidade Mililitros => new(2, "Mililitros");
         public static IngredienteUnidade ColheresDeCha => new(2, "Colheres de Chá");
@@ -34,14 +35,14 @@ public class Receitas
         }
     }
 
-    public struct Ingrediente
+    public class Ingrediente
     {
         public string Nome { get; set; }
         public decimal Quantidade { get; set; }
         public IngredienteUnidade Unidade { get; set; }
     }
 
-    public struct Receita
+    public class Receita
     {
         public int     Id { get; set; }
         public string  Nome { get; set; }
@@ -54,7 +55,7 @@ public class Receitas
         public string  Preparacao { get; set; }
     }
 
-    public List<Receita> ListaReceitas(string xmlPath, string xsdPath)
+    public static List<Receita> ListaReceitas(string xmlPath, string xsdPath)
     {
         XMLHandler.CriarXML(xmlPath, xsdPath);
         List<Receita> receitas = new List<Receita>();
@@ -145,7 +146,7 @@ public class Receitas
     }
 
 
-    private IngredienteUnidade ParseIngredienteUnidade(string unidade)
+    public IngredienteUnidade ParseIngredienteUnidade(string unidade)
     {
         return unidade.ToLower() switch
         {
@@ -178,7 +179,7 @@ public class Receitas
         using (XmlWriter writer = XmlWriter.Create(xmlPath))
         {
             writer.WriteStartElement("receitas");
-            writer.WriteAttributeString("xmlns", "", null, "http://www.example.com/receitas");
+            writer.WriteAttributeString("xmlns", XMLHandler.TargetNamespace(xsdPath));
 
             foreach (Receita receita in receitas)
             {
@@ -232,7 +233,104 @@ public class Receitas
 
             writer.WriteEndElement();
             writer.Flush();
+            writer.Close();
         }
     }
 
+    public static void EliminarReceita(string xmlPath, string xsdPath, int idReceita)
+    {
+        // Carregar as receitas existentes do arquivo XML
+        List<Receita> receitas = ListaReceitas(xmlPath, xsdPath);
+
+        // Procurar a receita com o ID especificado
+        Receita receita = receitas.FirstOrDefault(r => r.Id == idReceita);
+
+        // Verificar se a receita foi encontrada
+        if (receita != null)
+        {
+            // Remover a receita da lista
+            receitas.Remove(receita);
+
+            // Criar um novo XML com as receitas atualizadas
+            XMLHandler.CriarXML(xmlPath, xsdPath);
+
+            // Adicionar as receitas atualizadas ao XML
+            using (XmlWriter writer = XmlWriter.Create(xmlPath))
+            {
+                writer.WriteStartElement("receitas");
+                writer.WriteAttributeString("xmlns", XMLHandler.TargetNamespace(xsdPath));
+
+                foreach (Receita receitaLoop in receitas)
+                {
+                    writer.WriteStartElement("receita");
+
+                    writer.WriteStartElement("id");
+                    writer.WriteValue(receitaLoop.Id);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("nome");
+                    writer.WriteValue(receitaLoop.Nome);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("categoria");
+                    writer.WriteValue(receitaLoop.Categoria);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("dificuldade");
+                    writer.WriteValue(receitaLoop.Dificuldade);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("porcoes");
+                    writer.WriteValue(receitaLoop.Porcoes);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("tempo");
+                    writer.WriteValue(receitaLoop.Tempo);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("descrição");
+                    writer.WriteValue(receitaLoop.Descricao);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("ingredientes");
+
+                    foreach (Ingrediente ingrediente in receita.Ingredientes)
+                    {
+                        writer.WriteStartElement("ingrediente");
+
+                        writer.WriteStartElement("nome");
+                        writer.WriteValue(ingrediente.Nome);
+                        writer.WriteEndElement();
+
+                        writer.WriteStartElement("quantidade");
+                        writer.WriteValue(ingrediente.Quantidade);
+                        writer.WriteEndElement();
+
+                        writer.WriteStartElement("unidade");
+                        writer.WriteValue(ingrediente.Unidade.Name);
+                        writer.WriteEndElement();
+
+                        writer.WriteEndElement();
+                    }
+
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("preparação");
+                    writer.WriteValue(receita.Preparacao);
+                    writer.WriteEndElement();
+
+                    writer.WriteEndElement();
+                }
+
+                writer.WriteEndElement();
+                writer.Flush();
+                writer.Close();
+            }
+
+        }
+        else
+        {
+            throw new ArgumentException($"Receita com o ID {idReceita} não encontrada.");
+        }
+    }
 }
