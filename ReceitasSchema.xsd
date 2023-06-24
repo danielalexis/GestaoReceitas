@@ -11,7 +11,7 @@
 	<xs:simpleType name="unidade">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="Gramas"/>
-			<xs:enumeration value="Quilogramas"/>
+			<xs:enumeration value="Kilogramas"/>
 			<xs:enumeration value="Miligramas"/>
 			<xs:enumeration value="Litros"/>
 			<xs:enumeration value="Mililitros"/>
@@ -34,8 +34,8 @@
 							<xs:element name="categoria" type="xs:string"/>
 							<xs:element name="dificuldade" type="xs:string"/>
 							<xs:element name="porcoes" type="xs:decimal"/>
-							<xs:element name="tempo" type="xs:string"/>
-							<xs:element name="descrição" type="xs:string"/>
+							<xs:element name="tempo" type="xs:int"/>
+							<xs:element name="descricao" type="xs:string"/>
 							<xs:element name="ingredientes">
 								<xs:complexType>
 									<xs:sequence>
@@ -51,7 +51,7 @@
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="preparação" type="xs:string"/>
+							<xs:element name="preparacao" type="xs:string"/>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>

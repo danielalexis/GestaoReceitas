@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +21,7 @@ public class Receita
     public string Categoria { get; set; }
     public string Dificuldade { get; set; }
     public decimal Porcoes { get; set; }
-    public string Tempo { get; set; }
+    public int    Tempo { get; set; }
     public string Descricao { get; set; }
     public List<Ingrediente> Ingredientes { get; set; }
     public string Preparacao { get; set; }
@@ -69,9 +67,9 @@ public class Receita
                 receita.Porcoes = reader.ReadElementContentAsDecimal();
 
                 reader.ReadToNextSibling("tempo");
-                receita.Tempo = reader.ReadElementContentAsString();
+                receita.Tempo = reader.ReadElementContentAsInt();
 
-                reader.ReadToNextSibling("descrição");
+                reader.ReadToNextSibling("descricao");
                 receita.Descricao = reader.ReadElementContentAsString();
 
                 reader.ReadToNextSibling("ingredientes");
@@ -84,6 +82,7 @@ public class Receita
 
                         while (reader.Read())
                         {
+                            // ESTÁ A MULTIPLCAR INGREDIENTES
                             Ingrediente ingrediente = new Ingrediente();
 
                             if (reader.NodeType == XmlNodeType.Element)
@@ -113,11 +112,12 @@ public class Receita
                         
                     } while (reader.ReadToNextSibling("ingrediente"));
                 }
-                reader.ReadToNextSibling("preparação");
+                reader.ReadToNextSibling("preparacao");
                 receita.Preparacao = reader.ReadElementContentAsString();
 
                 receitas.Add(receita);
             }
+            reader.Close();
         }
 
         return receitas;
@@ -129,7 +129,7 @@ public class Receita
         return unidade.ToLower() switch
         {
             "gramas" => IngredienteUnidade.Gramas,
-            "quilogramas" => IngredienteUnidade.Kilogramas,
+            "kilogramas" => IngredienteUnidade.Kilogramas,
             "miligramas" => IngredienteUnidade.Miligramas,
             "litros" => IngredienteUnidade.Litros,
             "mililitros" => IngredienteUnidade.Mililitros,
@@ -142,77 +142,85 @@ public class Receita
     }
 
 
-    public void AdicionarReceita(string xmlPath, string xsdPath, Receita novaReceita)
+    public void AdicionarReceita(string xmlPath, string xsdPath)
     {
-        // Carregar as receitas existentes do arquivo XML
-        List<Receita> receitas = ListaReceitas(xmlPath, "ReceitasSchema.xsd");
-
-        // Adicionar a nova receita à lista
-        receitas.Add(novaReceita);
-
         // Criar um novo XML com as receitas atualizadas
         XMLHandler.CriarXML(xmlPath, xsdPath);
 
-        // Adicionar as receitas atualizadas ao XML
-        using (XmlWriter writer = XmlWriter.Create(xmlPath))
+        // Obter o último ID da lista de receitas
+        int ultimoId;
+        try
         {
-            writer.WriteStartElement("receitas");
-            writer.WriteAttributeString("xmlns", XMLHandler.TargetNamespace(xsdPath));
-
-            foreach (Receita receita in receitas)
-            {
-                writer.WriteStartElement("receita");
-
-                writer.WriteStartElement("nome");
-                writer.WriteString(receita.Nome);
-                writer.WriteEndElement();
-
-                writer.WriteStartElement("categoria");
-                writer.WriteString(receita.Categoria);
-                writer.WriteEndElement();
-
-                writer.WriteStartElement("dificuldade");
-                writer.WriteString(receita.Dificuldade);
-                writer.WriteEndElement();
-
-                writer.WriteStartElement("descrição");
-                writer.WriteString(receita.Descricao);
-                writer.WriteEndElement();
-
-                writer.WriteStartElement("ingredientes");
-
-                foreach (Ingrediente ingrediente in receita.Ingredientes)
-                {
-                    writer.WriteStartElement("ingrediente");
-
-                    writer.WriteStartElement("nome");
-                    writer.WriteString(ingrediente.Nome);
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement("quantidade");
-                    writer.WriteString(ingrediente.Quantidade.ToString());
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement("unidade");
-                    writer.WriteString(ingrediente.Unidade.Name);
-                    writer.WriteEndElement();
-
-                    writer.WriteEndElement();
-                }
-
-                writer.WriteEndElement();
-
-                writer.WriteStartElement("preparação");
-                writer.WriteString(receita.Preparacao);
-                writer.WriteEndElement();
-
-                writer.WriteEndElement();
-            }
-
-            writer.WriteEndElement();
-            writer.Flush();
-            writer.Close();
+            ultimoId = (ListaReceitas(xmlPath, xsdPath)).Max(receita => receita.Id);
+        } catch (InvalidOperationException)
+        {
+            ultimoId = 0;
         }
+        // Adicionar as receitas atualizadas ao XML
+        XmlDocument doc = new XmlDocument();
+        doc.Load(xmlPath);
+
+
+        XmlElement receitaElement = doc.CreateElement("receita", XMLHandler.TargetNamespace(xsdPath));
+
+        XmlElement idElement = doc.CreateElement("id", XMLHandler.TargetNamespace(xsdPath));
+        idElement.InnerText = (ultimoId + 1).ToString();
+
+        XmlElement nomeElement = doc.CreateElement("nome", XMLHandler.TargetNamespace(xsdPath));
+        nomeElement.InnerText = Nome;
+
+        XmlElement categoriaElement = doc.CreateElement("categoria", XMLHandler.TargetNamespace(xsdPath));
+        categoriaElement.InnerText = Categoria;
+
+        XmlElement dificuldadeElement = doc.CreateElement("dificuldade", XMLHandler.TargetNamespace(xsdPath));
+        dificuldadeElement.InnerText = Dificuldade;
+
+        XmlElement porcoesElement = doc.CreateElement("porcoes", XMLHandler.TargetNamespace(xsdPath));
+        porcoesElement.InnerText = Porcoes.ToString();
+
+        XmlElement tempoElement = doc.CreateElement("tempo", XMLHandler.TargetNamespace(xsdPath));
+        tempoElement.InnerText = Tempo.ToString();
+
+        XmlElement descricaoElement = doc.CreateElement("descricao", XMLHandler.TargetNamespace(xsdPath));
+        descricaoElement.InnerText = Descricao;
+
+        XmlElement ingredientesElement = doc.CreateElement("ingredientes", XMLHandler.TargetNamespace(xsdPath));
+
+        foreach (Ingrediente ingrediente in Ingredientes)
+        {
+            XmlElement ingredienteElement = doc.CreateElement("ingrediente", XMLHandler.TargetNamespace(xsdPath));
+
+            XmlElement nomeIngredienteElement = doc.CreateElement("nome", XMLHandler.TargetNamespace(xsdPath));
+            nomeIngredienteElement.InnerText = ingrediente.Nome;
+
+            XmlElement quantidadeIngredienteElement = doc.CreateElement("quantidade", XMLHandler.TargetNamespace(xsdPath));
+            quantidadeIngredienteElement.InnerText = ingrediente.Quantidade.ToString();
+
+            XmlElement unidadeIngredienteElement = doc.CreateElement("unidade", XMLHandler.TargetNamespace(xsdPath));
+            unidadeIngredienteElement.InnerText = ingrediente.Unidade.Name;
+
+            ingredienteElement.AppendChild(nomeIngredienteElement);
+            ingredienteElement.AppendChild(quantidadeIngredienteElement);
+            ingredienteElement.AppendChild(unidadeIngredienteElement);
+
+            ingredientesElement.AppendChild(ingredienteElement);
+        }
+
+        XmlElement preparacaoElement = doc.CreateElement("preparacao", XMLHandler.TargetNamespace(xsdPath));
+        preparacaoElement.InnerText = this.Preparacao;
+
+        receitaElement.AppendChild(idElement);
+        receitaElement.AppendChild(nomeElement);
+        receitaElement.AppendChild(categoriaElement);
+        receitaElement.AppendChild(dificuldadeElement);
+        receitaElement.AppendChild(porcoesElement);
+        receitaElement.AppendChild(tempoElement);
+        receitaElement.AppendChild(descricaoElement);
+        receitaElement.AppendChild(ingredientesElement);
+        receitaElement.AppendChild(preparacaoElement);
+        doc.DocumentElement.AppendChild(receitaElement);
+        doc.Save(xmlPath);
+
     }
 
     public static void EliminarReceita(string xmlPath, string xsdPath, int idReceita)
@@ -229,81 +237,94 @@ public class Receita
             // Remover a receita da lista
             receitas.Remove(receita);
 
+            try
+            {
+                File.Delete(xmlPath);
+
+            } catch (IOException)
+            {
+                throw new IOException("Não foi possível eliminar o arquivo XML.");
+            }
+
             // Criar um novo XML com as receitas atualizadas
             XMLHandler.CriarXML(xmlPath, xsdPath);
 
-            // Adicionar as receitas atualizadas ao XML
-            using (XmlWriter writer = XmlWriter.Create(xmlPath))
+            // Criar um novo documento XML
+            XmlDocument doc = new XmlDocument();
+
+            // Carregar o arquivo XML existente
+            doc.Load(xmlPath);
+
+            // Obter o elemento raiz do documento
+            XmlElement rootElement = doc.DocumentElement;
+
+            // Adicionar as receitas atualizadas ao documento
+            foreach (Receita receitaLoop in receitas)
             {
-                writer.WriteStartElement("receitas");
-                writer.WriteAttributeString("xmlns", XMLHandler.TargetNamespace(xsdPath));
+                // Criar o elemento "receita"
+                XmlElement receitaElement = doc.CreateElement("receita", XMLHandler.TargetNamespace(xsdPath));
 
-                foreach (Receita receitaLoop in receitas)
+                // Adicionar os elementos filhos à receita
+
+                XmlElement idElement = doc.CreateElement("id", XMLHandler.TargetNamespace(xsdPath));
+                idElement.InnerText = receitaLoop.Id.ToString();
+                receitaElement.AppendChild(idElement);
+
+                XmlElement nomeElement = doc.CreateElement("nome", XMLHandler.TargetNamespace(xsdPath));
+                nomeElement.InnerText = receitaLoop.Nome;
+                receitaElement.AppendChild(nomeElement);
+
+                XmlElement categoriaElement = doc.CreateElement("categoria", XMLHandler.TargetNamespace(xsdPath));
+                categoriaElement.InnerText = receitaLoop.Categoria;
+                receitaElement.AppendChild(categoriaElement);
+
+                XmlElement dificuldadeElement = doc.CreateElement("dificuldade", XMLHandler.TargetNamespace(xsdPath));
+                dificuldadeElement.InnerText = receitaLoop.Dificuldade;
+                receitaElement.AppendChild(dificuldadeElement);
+
+                XmlElement porcoesElement = doc.CreateElement("porcoes", XMLHandler.TargetNamespace(xsdPath));
+                porcoesElement.InnerText = receitaLoop.Porcoes.ToString();
+                receitaElement.AppendChild(porcoesElement);
+
+                XmlElement tempoElement = doc.CreateElement("tempo", XMLHandler.TargetNamespace(xsdPath));
+                tempoElement.InnerText = receitaLoop.Tempo.ToString();
+                receitaElement.AppendChild(tempoElement);
+
+                XmlElement descricaoElement = doc.CreateElement("descricao", XMLHandler.TargetNamespace(xsdPath));
+                descricaoElement.InnerText = receitaLoop.Descricao;
+                receitaElement.AppendChild(descricaoElement);
+
+                XmlElement ingredientesElement = doc.CreateElement("ingredientes", XMLHandler.TargetNamespace(xsdPath));
+                foreach (Ingrediente ingrediente in receitaLoop.Ingredientes)
                 {
-                    writer.WriteStartElement("receita");
+                    XmlElement ingredienteElement = doc.CreateElement("ingrediente", XMLHandler.TargetNamespace(xsdPath));
 
-                    writer.WriteStartElement("id");
-                    writer.WriteValue(receitaLoop.Id);
-                    writer.WriteEndElement();
+                    XmlElement nomeIngredienteElement = doc.CreateElement("nome", XMLHandler.TargetNamespace(xsdPath));
+                    nomeIngredienteElement.InnerText = ingrediente.Nome;
+                    ingredienteElement.AppendChild(nomeIngredienteElement);
 
-                    writer.WriteStartElement("nome");
-                    writer.WriteValue(receitaLoop.Nome);
-                    writer.WriteEndElement();
+                    XmlElement quantidadeElement = doc.CreateElement("quantidade", XMLHandler.TargetNamespace(xsdPath));
+                    quantidadeElement.InnerText = ingrediente.Quantidade.ToString();
+                    ingredienteElement.AppendChild(quantidadeElement);
 
-                    writer.WriteStartElement("categoria");
-                    writer.WriteValue(receitaLoop.Categoria);
-                    writer.WriteEndElement();
+                    XmlElement unidadeElement = doc.CreateElement("unidade", XMLHandler.TargetNamespace(xsdPath));
+                    unidadeElement.InnerText = ingrediente.Unidade.Name;
+                    ingredienteElement.AppendChild(unidadeElement);
 
-                    writer.WriteStartElement("dificuldade");
-                    writer.WriteValue(receitaLoop.Dificuldade);
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement("porcoes");
-                    writer.WriteValue(receitaLoop.Porcoes);
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement("tempo");
-                    writer.WriteValue(receitaLoop.Tempo);
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement("descrição");
-                    writer.WriteValue(receitaLoop.Descricao);
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement("ingredientes");
-
-                    foreach (Ingrediente ingrediente in receita.Ingredientes)
-                    {
-                        writer.WriteStartElement("ingrediente");
-
-                        writer.WriteStartElement("nome");
-                        writer.WriteValue(ingrediente.Nome);
-                        writer.WriteEndElement();
-
-                        writer.WriteStartElement("quantidade");
-                        writer.WriteValue(ingrediente.Quantidade);
-                        writer.WriteEndElement();
-
-                        writer.WriteStartElement("unidade");
-                        writer.WriteValue(ingrediente.Unidade.Name);
-                        writer.WriteEndElement();
-
-                        writer.WriteEndElement();
-                    }
-
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement("preparação");
-                    writer.WriteValue(receita.Preparacao);
-                    writer.WriteEndElement();
-
-                    writer.WriteEndElement();
+                    ingredientesElement.AppendChild(ingredienteElement);
                 }
+                receitaElement.AppendChild(ingredientesElement);
 
-                writer.WriteEndElement();
-                writer.Flush();
-                writer.Close();
+                XmlElement preparacaoElement = doc.CreateElement("preparacao", XMLHandler.TargetNamespace(xsdPath));
+                preparacaoElement.InnerText = receitaLoop.Preparacao;
+                receitaElement.AppendChild(preparacaoElement);
+
+                // Adicionar a receita ao elemento raiz
+                rootElement.AppendChild(receitaElement);
             }
+
+            // Salvar as alterações no arquivo XML
+            doc.Save(xmlPath);
 
         }
         else
@@ -318,13 +339,13 @@ public class IngredienteUnidade : Enumeration
 {
     public static IngredienteUnidade Gramas => new(1, "Gramas");
     public static IngredienteUnidade Kilogramas => new(2, "Kilogramas");
-    public static IngredienteUnidade Miligramas => new(2, "Miiligramas");
-    public static IngredienteUnidade Litros => new(2, "Litros");
-    public static IngredienteUnidade Mililitros => new(2, "Mililitros");
-    public static IngredienteUnidade ColheresDeCha => new(2, "Colheres de Chá");
-    public static IngredienteUnidade ColheresDeSopa => new(2, "Colheres de Sopa");
-    public static IngredienteUnidade Xicaras => new(2, "Xícaras");
-    public static IngredienteUnidade Unidades => new(2, "Unidades");
+    public static IngredienteUnidade Miligramas => new(3, "Miligramas");
+    public static IngredienteUnidade Litros => new(4, "Litros");
+    public static IngredienteUnidade Mililitros => new(5, "Mililitros");
+    public static IngredienteUnidade ColheresDeCha => new(6, "Colheres de Chá");
+    public static IngredienteUnidade ColheresDeSopa => new(7, "Colheres de Sopa");
+    public static IngredienteUnidade Xicaras => new(8, "Xícaras");
+    public static IngredienteUnidade Unidades => new(9, "Unidades");
 
     public IngredienteUnidade(int id, string name)
         : base(id, name)

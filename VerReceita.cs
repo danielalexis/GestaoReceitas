@@ -18,8 +18,6 @@ namespace GestaoReceitas
         public VerReceita()
         {
             InitializeComponent();
-            receita.Ingredientes = ingredienteList;
-
         }
 
         private void btnAdiconarIngrediente_Click(object sender, EventArgs e)
@@ -84,9 +82,30 @@ namespace GestaoReceitas
 
             // Verificar se os campos estão preenchidos
             if (string.IsNullOrEmpty(txtNome.Text) || string.IsNullOrEmpty(cmbCategoria.Text) || string.IsNullOrEmpty(cmbDificuldade.Text) || 
-                porcoes > 0 ||  || ingredienteList.Count == 0)
+                porcoes <= 0 || numTempo.Value <= 0 || string.IsNullOrEmpty(txtDescricao.Text) || string.IsNullOrEmpty(txtPreparaco.Text) || ingredienteList.Count <= 0)
             {
                 MessageBox.Show("Por favor preencha todos os campos!", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Adicionar a receita
+            receita.Nome = txtNome.Text;
+            receita.Categoria = cmbCategoria.Text;
+            receita.Dificuldade = cmbDificuldade.Text;
+            receita.Porcoes = porcoes;
+            receita.Tempo = (int)numTempo.Value;
+            receita.Descricao = txtDescricao.Text;
+            receita.Preparacao = txtPreparaco.Text;
+            receita.Ingredientes = ingredienteList;
+            try
+            {
+                receita.AdicionarReceita("receitas.xml", "ReceitasSchema.xsd");
+                MessageBox.Show("Receita adicionada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtId.Text = receita.Id.ToString();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
         }

@@ -54,7 +54,7 @@ namespace GestaoReceitas
                 item.SubItems.Add(receitaloop.Nome);
                 item.SubItems.Add(receitaloop.Categoria);
                 item.SubItems.Add(receitaloop.Dificuldade);
-                item.SubItems.Add(receitaloop.Tempo);
+                item.SubItems.Add(receitaloop.Tempo.ToString());
                 item.SubItems.Add(receitaloop.Descricao);
                 lstViewReceitas.Items.Add(item);
             }
@@ -112,16 +112,36 @@ namespace GestaoReceitas
 
         private void btnNovaReceita_Click(object sender, EventArgs e)
         {
-            new VerReceita().Show();
+            new VerReceita().ShowDialog();
+            // Reload das receitas
+            // Elimitar todas as receitas da listview
+            lstViewReceitas.Items.Clear();
+            List<Receita> listaReceitas = Receita.ListaReceitas("receitas.xml", "ReceitasSchema.xsd");
+            foreach (Receita receita in listaReceitas)
+            {
+                ListViewItem item = new ListViewItem(receita.Id.ToString());
+                item.SubItems.Add(receita.Nome);
+                item.SubItems.Add(receita.Categoria);
+                item.SubItems.Add(receita.Dificuldade);
+                item.SubItems.Add(receita.Tempo.ToString());
+                item.SubItems.Add(receita.Descricao);
+                lstViewReceitas.Items.Add(item);
+            }
         }
 
         private void btnApagarReceita_Click(object sender, EventArgs e)
         {
-            if (lstViewReceitas.SelectedItems.Count == 1)
+            if (lstViewReceitas.SelectedItems.Count > 0)
             {
                 // lstViewReceitas.SelectedItems.SelectItemArray[0] é o id da receita
                 // Apagar a receita do XML
-
+                bool valid = int.TryParse(lstViewReceitas.SelectedItems[0].Text, out int id);
+                if (!valid)
+                {
+                    MessageBox.Show("Erro ao apagar a receita");
+                    return;
+                }
+                Receita.EliminarReceita("receitas.xml", "ReceitasSchema.xsd", id);
 
                 // Reload das receitas
                 // Elimitar todas as receitas da listview
@@ -133,7 +153,7 @@ namespace GestaoReceitas
                     item.SubItems.Add(receita.Nome);
                     item.SubItems.Add(receita.Categoria);
                     item.SubItems.Add(receita.Dificuldade);
-                    item.SubItems.Add(receita.Tempo);
+                    item.SubItems.Add(receita.Tempo.ToString());
                     item.SubItems.Add(receita.Descricao);
                     lstViewReceitas.Items.Add(item);
                 }
