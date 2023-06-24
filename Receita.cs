@@ -79,40 +79,29 @@ public class Receita
                 {
                     do
                     {
+                        Ingrediente ingrediente = new Ingrediente();
 
-                        while (reader.Read())
+                        if (reader.ReadToFollowing("nome"))
                         {
-                            // ESTÁ A MULTIPLCAR INGREDIENTES
-                            Ingrediente ingrediente = new Ingrediente();
-
-                            if (reader.NodeType == XmlNodeType.Element)
-                            {
-
-                                switch (reader.Name)
-                                {
-                                    case "nome":
-                                        ingrediente.Nome = reader.ReadElementContentAsString();
-                                        break;
-                                    case "quantidade":
-                                        ingrediente.Quantidade = reader.ReadElementContentAsDecimal();
-                                        break;
-                                    case "unidade":
-                                        ingrediente.Unidade = ParseIngredienteUnidade(reader.ReadElementContentAsString());
-                                        break;
-                                }
-
-                            }
-                            else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "ingrediente")
-                            {
-                                break;
-                            }
-                            receita.Ingredientes.Add(ingrediente);
+                            ingrediente.Nome = reader.ReadElementContentAsString();
                         }
 
-                        
+                        if (reader.ReadToFollowing("quantidade"))
+                        {
+                            ingrediente.Quantidade = reader.ReadElementContentAsDecimal();
+                        }
+
+                        if (reader.ReadToFollowing("unidade"))
+                        {
+                            ingrediente.Unidade = ParseIngredienteUnidade(reader.ReadElementContentAsString());
+                        }
+
+                        receita.Ingredientes.Add(ingrediente);
+
                     } while (reader.ReadToNextSibling("ingrediente"));
                 }
-                reader.ReadToNextSibling("preparacao");
+
+                reader.ReadToFollowing("preparacao");
                 receita.Preparacao = reader.ReadElementContentAsString();
 
                 receitas.Add(receita);
