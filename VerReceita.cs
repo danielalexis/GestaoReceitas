@@ -15,9 +15,38 @@ namespace GestaoReceitas
         private Ingrediente ingrediente = new Ingrediente();
         private List<Ingrediente> ingredienteList = new();
         private Receita receita = new Receita();
-        public VerReceita()
+        public VerReceita(int? id)
         {
             InitializeComponent();
+            if (id != null)
+            {
+                // Carregar a lista de receitas
+                List<Receita> listaReceitas = Receita.ListaReceitas("receitas.xml", "ReceitasSchema.xsd");
+                // Procurar a receita com o id
+                receita = listaReceitas.Find(x => x.Id == id);
+                if (receita == null)
+                {
+                    MessageBox.Show("Não foi possível encontrar a receita!", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                ingredienteList = receita.Ingredientes;
+
+                // Preencher os campos
+                txtNome.Text = receita.Nome;
+                cmbCategoria.Text = receita.Categoria;
+                cmbDificuldade.Text = receita.Dificuldade;
+                txtPorcoes.Text = receita.Porcoes.ToString();
+                numTempo.Value = receita.Tempo;
+                txtDescricao.Text = receita.Descricao;
+                foreach (Ingrediente ingrediente in receita.Ingredientes)
+                {
+                    ListViewItem item = new ListViewItem(ingrediente.Nome);
+                    item.SubItems.Add(ingrediente.Quantidade.ToString());
+                    item.SubItems.Add(ingrediente.Unidade.ToString());
+                    lstViewIngredientes.Items.Add(item);
+                }
+                txtPreparaco.Text = receita.Preparacao;
+            }
         }
 
         private void btnAdiconarIngrediente_Click(object sender, EventArgs e)

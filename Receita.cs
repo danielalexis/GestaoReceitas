@@ -209,7 +209,7 @@ public class Receita
         receitaElement.AppendChild(preparacaoElement);
         doc.DocumentElement.AppendChild(receitaElement);
         doc.Save(xmlPath);
-
+        Id = ultimoId + 1;
     }
 
     public static void EliminarReceita(string xmlPath, string xsdPath, int idReceita)

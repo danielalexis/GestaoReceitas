@@ -91,15 +91,16 @@ namespace GestaoReceitas
         private void lstViewReceitas_MouseDoubleClick(object sender, MouseEventArgs e)
         {
 
-            /*if (lstViewReceitas.SelectedItems.Count == 1) {
-                
-                ListViewItem.ListViewSubItemCollection items = ((ListViewI)sender).SubItems;
-                foreach (ListViewItem item in items)
+            if (lstViewReceitas.SelectedItems.Count > 0) {
+                bool valid = int.TryParse(lstViewReceitas.SelectedItems[0].Text, out int id);
+                if (!valid)
                 {
-                    MessageBox.Show(item.ToString());
-
+                    MessageBox.Show("Erro ao abrir a receita");
+                    return;
                 }
-            } */
+                //Receita receita = Receita.GetReceita("receitas.xml", "ReceitasSchema.xsd", id);
+                new VerReceita(id).ShowDialog();
+            } 
 
             //item.SubItems[];
         }
@@ -112,7 +113,7 @@ namespace GestaoReceitas
 
         private void btnNovaReceita_Click(object sender, EventArgs e)
         {
-            new VerReceita().ShowDialog();
+            new VerReceita(null).ShowDialog();
             // Reload das receitas
             // Elimitar todas as receitas da listview
             lstViewReceitas.Items.Clear();
