@@ -32,6 +32,7 @@ namespace GestaoReceitas
                 ingredienteList = receita.Ingredientes;
 
                 // Preencher os campos
+                txtId.Text = receita.Id.ToString();
                 txtNome.Text = receita.Nome;
                 cmbCategoria.Text = receita.Categoria;
                 cmbDificuldade.Text = receita.Dificuldade;
@@ -46,6 +47,8 @@ namespace GestaoReceitas
                     lstViewIngredientes.Items.Add(item);
                 }
                 txtPreparaco.Text = receita.Preparacao;
+
+                
             }
         }
 
@@ -115,6 +118,19 @@ namespace GestaoReceitas
             {
                 MessageBox.Show("Por favor preencha todos os campos!", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+
+            if (!string.IsNullOrEmpty(txtId.Text))
+            {
+                try
+                {
+                    Receita.EliminarReceita("receitas.xml", "ReceitasSchema.xsd", receita.Id);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
 
             // Adicionar a receita

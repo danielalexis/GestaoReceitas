@@ -100,7 +100,21 @@ namespace GestaoReceitas
                 }
                 //Receita receita = Receita.GetReceita("receitas.xml", "ReceitasSchema.xsd", id);
                 new VerReceita(id).ShowDialog();
+                // Refresh da lista de receitas
+                lstViewReceitas.Items.Clear();
+                List<Receita> listaReceitas = Receita.ListaReceitas("receitas.xml", "ReceitasSchema.xsd");
+                foreach (Receita receita in listaReceitas)
+                {
+                    ListViewItem item = new ListViewItem(receita.Id.ToString());
+                    item.SubItems.Add(receita.Nome);
+                    item.SubItems.Add(receita.Categoria);
+                    item.SubItems.Add(receita.Dificuldade);
+                    item.SubItems.Add(receita.Tempo.ToString());
+                    item.SubItems.Add(receita.Descricao);
+                    lstViewReceitas.Items.Add(item);
+                }
             } 
+
 
             //item.SubItems[];
         }
